@@ -1,17 +1,16 @@
 package com.company;
 
-import com.company.commands.CommandHandler;
-import com.company.commands.HelpCommand;
-import com.company.commands.StartCommand;
+import com.company.commands.telegramcommands.TelegramHelpCommand;
+import com.company.commands.telegramcommands.TelegramStartCommand;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 
 public final class Bot extends AbilityBot {
-    public Bot(String botToken, String botUsername, CommandHandler commandHandler) {
+    public Bot(String botToken, String botUsername) {
         super(botToken, botUsername);
 
         addExtensions(
-                new StartCommand(silent, commandHandler),
-                new HelpCommand(silent, commandHandler)
+                new TelegramStartCommand(silent),
+                new TelegramHelpCommand(silent)
         );
     }
 

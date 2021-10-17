@@ -13,7 +13,7 @@ public class Main {
 
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-
+            //доделать CommandHandler, silentSender
             botsApi.registerBot(new Bot(envVars.get("BOT_TOKEN"), envVars.get("BOT_USERNAME")));
         } catch (TelegramApiException e) {
             e.printStackTrace();

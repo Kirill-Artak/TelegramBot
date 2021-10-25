@@ -1,8 +1,8 @@
 package com.company;
 
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import com.company.commands.commandhandler.ICommandHandler;
+import com.company.commands.commandhandler.TelegramCommandHandler;
+import org.telegram.abilitybots.api.util.AbilityExtension;
 
 import java.util.Map;
 
@@ -10,13 +10,9 @@ public class Main {
 
     public static void main(String[] args) {
         Map<String, String> envVars = System.getenv();
+        ICommandHandler<AbilityExtension> commandHandler = new TelegramCommandHandler();
 
-        try {
-            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            //доделать CommandHandler, silentSender
-            botsApi.registerBot(new Bot(envVars.get("BOT_TOKEN"), envVars.get("BOT_USERNAME")));
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        TelegramBot telegramBot = new TelegramBot(envVars.get("BOT_TOKEN"), envVars.get("BOT_USERNAME"), commandHandler);
+        telegramBot.botStart();
     }
 }

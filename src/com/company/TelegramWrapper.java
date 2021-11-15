@@ -5,16 +5,20 @@ import com.company.commands.commandhandler.ICommandHandler;
 import com.company.commands.telegramcommands.TelegramBaseCommand;
 import com.company.commands.telegramcommands.TelegramHelpCommand;
 import com.company.commands.telegramcommands.TelegramStartCommand;
+import com.company.database.IDatabaseWrapper;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.abilitybots.api.util.AbilityExtension;
 
 public final class TelegramWrapper extends AbilityBot {
-    public TelegramWrapper(String botToken, String botUsername, ICommandHandler<AbilityExtension> commandHandler) {
+    public TelegramWrapper(String botToken,
+                           String botUsername,
+                           ICommandHandler<AbilityExtension> commandHandler,
+                           IDatabaseWrapper db) {
         super(botToken, botUsername);
 
         addExtensions(
-                commandHandler.getCommands(silent)
+                commandHandler.getCommands(silent, db)
                 //new TelegramStartCommand(silent),
                 //new TelegramHelpCommand(silent)
         );

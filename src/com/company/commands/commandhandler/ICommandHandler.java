@@ -1,11 +1,13 @@
 package com.company.commands.commandhandler;
 
-import com.company.database.IDatabaseWrapper;
-import org.telegram.abilitybots.api.sender.SilentSender;
-import org.telegram.abilitybots.api.util.AbilityExtension;
+import com.company.commands.commandhandler.actionhandler.IActionHandler;
+import com.company.commands.commandhandler.messagecontext.IMessageContext;
+import com.company.commands.commandhandler.senders.ISender;
 
-import java.util.Collection;
+import java.util.function.Consumer;
 
-public interface ICommandHandler<T> {
-    Collection<T> getCommands(SilentSender silentSender, IDatabaseWrapper db);
+public interface ICommandHandler {
+    void setSender(ISender sender);
+    IActionHandler getStartActions();
+    IActionHandler getHelpActions();
 }

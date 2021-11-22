@@ -1,0 +1,29 @@
+package com.company.commands.commandhandler.actionhandler;
+
+import com.company.commands.commandhandler.ICommandStore;
+import com.company.commands.commandhandler.messagecontext.IMessageContext;
+import com.company.commands.commandhandler.senders.ISender;
+import com.company.database.IDatabaseWrapper;
+import com.company.database.mongoDB.mongoDBtemplates.User;
+
+public class StartActionHandler implements IActionHandler{
+    private final ISender sender;
+    private final IDatabaseWrapper db;
+
+    public StartActionHandler(ISender sender, IDatabaseWrapper db){
+        this.sender = sender;
+        this.db = db;
+    }
+
+    @Override
+    public void action(IMessageContext ctx) {
+//ctx -> silentSender.send("Привет!\n Этот бот будет помогать тебе учить большие объемы информации.\n📕", ctx.chatId()),
+        sender.send("Привет!\n Этот бот будет помогать тебе учить большие объемы информации.\n📕", ctx.getChatID());
+    }
+
+    @Override
+    public void postAction(IMessageContext ctx) {
+//ctx -> db.registerUser(new User(ctx.chatId(), ctx.user().getFirstName())));
+        db.registerUser(new User(ctx.getChatID(), ctx.getUser().getFirstName()));
+    }
+}

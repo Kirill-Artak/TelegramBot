@@ -1,16 +1,14 @@
 package com.company;
 
-import com.company.commands.commandhandler.ICommandHandler;
-import com.company.database.IDatabaseWrapper;
+import com.company.commands.commandhandler.ICommandStore;
 import org.telegram.abilitybots.api.util.AbilityExtension;
 
 public abstract class BaseTelegramBot extends BaseBot {
-    protected final ICommandHandler<AbilityExtension> commandHandler;
+    protected final ICommandStore<AbilityExtension> commandStore;
     protected BaseTelegramBot(String botToken,
                               String botUsername,
-                              ICommandHandler<AbilityExtension> commandHandler,
-                              IDatabaseWrapper db) {
-        super(botToken, botUsername, db);
-        this.commandHandler = commandHandler;
+                              ICommandStore<AbilityExtension> commandHandler) {
+        super(botToken, botUsername);
+        this.commandStore = commandHandler;
     }
 }

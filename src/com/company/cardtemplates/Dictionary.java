@@ -1,5 +1,6 @@
 package com.company.cardtemplates;
 
+import com.company.database.dbfields.CardFields;
 import org.bson.Document;
 
 import java.util.Map;
@@ -14,6 +15,11 @@ public class Dictionary extends BaseCardTemplate{
 
     @Override
     public Document getRawData() {
-        return rawData.append("data", new Document(data));
+        return rawData.append(CardFields.data, new Document(data));
+    }
+
+    @Override
+    public Object getCardData() {
+        return data;
     }
 }

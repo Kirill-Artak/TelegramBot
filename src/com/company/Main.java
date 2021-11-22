@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         Map<String, String> envVars = System.getenv();
         ICommandHandler<AbilityExtension> commandHandler = new TelegramCommandHandler();
-        IDatabaseWrapper db = new MongoDBSyncWrapper(envVars.get("MONGODB"));
+        IDatabaseWrapper db = new MongoDBSyncWrapper(envVars.get("MONGODB"), envVars.get("DB_NAME"));
 
         TelegramBot telegramBot = new TelegramBot(
                 envVars.get("BOT_TOKEN"),

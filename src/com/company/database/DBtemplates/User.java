@@ -1,7 +1,6 @@
-package com.company.database.mongoDB.mongoDBtemplates;
+package com.company.database.DBtemplates;
 
 import com.company.database.dbfields.UserFields;
-import com.company.database.mongoDB.IRawData;
 import org.bson.Document;
 
 public class User implements IUser {

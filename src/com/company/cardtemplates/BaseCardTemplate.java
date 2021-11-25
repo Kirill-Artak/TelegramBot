@@ -1,7 +1,6 @@
 package com.company.cardtemplates;
 
 import com.company.database.dbfields.CardFields;
-import com.company.database.mongoDB.IRawData;
 import org.bson.Document;
 
 public abstract class BaseCardTemplate implements ICard {

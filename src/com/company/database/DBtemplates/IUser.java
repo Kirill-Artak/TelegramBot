@@ -1,4 +1,4 @@
-package com.company.database.mongoDB.mongoDBtemplates;
+package com.company.database.DBtemplates;
 
 import com.company.database.mongoDB.IRawData;
 

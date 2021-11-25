@@ -1,7 +1,8 @@
 package com.company.commands.commandhandler.messagecontext;
 
+import com.company.database.mongoDB.mongoDBtemplates.User;
 import org.telegram.abilitybots.api.objects.MessageContext;
-import org.telegram.telegrambots.meta.api.objects.User;
+
 
 public final class TelegramMessageContext implements IMessageContext{
     private final MessageContext ctx;
@@ -17,6 +18,6 @@ public final class TelegramMessageContext implements IMessageContext{
 
     @Override
     public User getUser() {
-        return ctx.user();
+        return new User(ctx.chatId(), ctx.user().getFirstName());
     }
 }

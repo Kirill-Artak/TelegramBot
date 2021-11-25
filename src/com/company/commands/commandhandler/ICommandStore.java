@@ -7,6 +7,6 @@ import org.telegram.abilitybots.api.util.AbilityExtension;
 
 import java.util.Collection;
 
-public interface ICommandStore<T> {
-    Collection<T> getCommands(ISender sender);
+public interface ICommandStore {
+    Collection<AbilityExtension> getTelegramCommands(ISender sender);
 }

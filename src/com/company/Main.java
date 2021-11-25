@@ -16,7 +16,7 @@ public class Main {
         Map<String, String> envVars = System.getenv();
         IDatabaseWrapper db = new MongoDBSyncWrapper(envVars.get("MONGODB"), envVars.get("DB_NAME"));
         ICommandHandler commandHandler = new CommandHandler(db);
-        ICommandStore<AbilityExtension> commandStore = new CommandStore(commandHandler);
+        ICommandStore commandStore = new CommandStore(commandHandler);
 
 
         TelegramBot telegramBot = new TelegramBot(

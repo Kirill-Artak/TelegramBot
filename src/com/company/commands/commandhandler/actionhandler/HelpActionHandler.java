@@ -17,6 +17,5 @@ public class HelpActionHandler implements IActionHandler{
 
     @Override
     public void postAction(IMessageContext ctx) {
-
     }
 }

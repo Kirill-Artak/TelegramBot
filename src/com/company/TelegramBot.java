@@ -10,7 +10,7 @@ public class TelegramBot extends BaseTelegramBot {
 
     public TelegramBot(String botToken,
                        String botUsername,
-                       ICommandStore<AbilityExtension> commandStore) {
+                       ICommandStore commandStore) {
         super(botToken, botUsername, commandStore);
     }
 

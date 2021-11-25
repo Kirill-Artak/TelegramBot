@@ -10,7 +10,7 @@ import org.telegram.abilitybots.api.util.AbilityExtension;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CommandStore implements ICommandStore<AbilityExtension> {
+public class CommandStore implements ICommandStore {
     private final ICommandHandler commandHandler;
 
     public CommandStore(ICommandHandler commandHandler){
@@ -18,11 +18,11 @@ public class CommandStore implements ICommandStore<AbilityExtension> {
     }
 
     @Override
-    public Collection<AbilityExtension> getCommands(ISender sender) {
+    public Collection<AbilityExtension> getTelegramCommands(ISender sender) {
         commandHandler.setSender(sender);
         ArrayList<AbilityExtension> commands = new ArrayList<>();
-        commands.add(new TelegramStartCommand(commandHandler));
-        commands.add(new TelegramHelpCommand(commandHandler));
+        commands.add(new TelegramStartCommand(commandHandler.getStartActions()));
+        commands.add(new TelegramHelpCommand(commandHandler.getHelpActions()));
         return commands;
     }
 }

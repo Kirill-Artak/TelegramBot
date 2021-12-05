@@ -4,15 +4,18 @@ import com.company.commands.commandhandler.actionhandler.HelpActionHandler;
 import com.company.commands.commandhandler.actionhandler.IActionHandler;
 import com.company.commands.commandhandler.actionhandler.StartActionHandler;
 import com.company.commands.commandhandler.senders.ISender;
-import com.company.database.IDatabaseWrapper;
-import org.eclipse.collections.api.bag.primitive.ImmutableDoubleBag;
+import com.company.repositories.ICardRepository;
+import com.company.repositories.IUserRepository;
 
 public final class CommandHandler implements ICommandHandler{
     private ISender sender;
-    private final IDatabaseWrapper<?, ?> db;
+    private final IUserRepository userRepository;
+    private final ICardRepository cardRepository;
 
-    public CommandHandler(IDatabaseWrapper<?, ?> db){
-        this.db = db;
+    public CommandHandler(IUserRepository userRepository, ICardRepository cardRepository){
+
+        this.userRepository = userRepository;
+        this.cardRepository = cardRepository;
     }
 
     @Override
@@ -22,7 +25,7 @@ public final class CommandHandler implements ICommandHandler{
 
     @Override
     public IActionHandler getStartActions() {
-        return new StartActionHandler(sender, db);
+        return new StartActionHandler(sender, userRepository);
     }
 
     @Override

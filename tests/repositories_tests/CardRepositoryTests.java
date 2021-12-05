@@ -1,31 +1,36 @@
-package database_tests;
+package repositories_tests;
 
 import com.company.cardtemplates.Dictionary;
 import com.company.cardtemplates.ICard;
 import com.company.cardtemplates.PlainText;
-import com.company.database.dbfields.CardFields;
-import com.company.database.dbfields.Collections;
-import com.company.database.dbfields.UserFields;
-import com.company.database.mongoDB.MongoDBSyncWrapper;
 import com.company.database.DBtemplates.IUser;
 import com.company.database.DBtemplates.User;
+import com.company.database.dbfields.CardFields;
+import com.company.database.mongoDB.MongoDBCore;
+import com.company.repositories.CardRepository;
+import com.company.repositories.ICardRepository;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
+import database_tests.MongoDBCoreTests;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-public class MongoDBSyncWrapperTest {
-    private TestDBWrapper db;
-
+public class CardRepositoryTests {
+    private TestDB db;
+    private ICardRepository cardRepository;
 
     @BeforeEach
     public void beforeTestMethod(){
         Map<String, String> envVars = System.getenv();
-        db = new TestDBWrapper(envVars.get("MONGODB"), envVars.get("TEST_DB_NAME"));
+        db = new TestDB(envVars.get("MONGODB"), envVars.get("TEST_DB_NAME"));
+        cardRepository = new CardRepository(db);
     }
 
     @AfterEach
@@ -33,62 +38,13 @@ public class MongoDBSyncWrapperTest {
         db.dbDrop();
     }
 
-    @Test
-    public void insertOnlyOneUserDocumentTest(){
-        IUser user = new User(12345, "abacaba");
-        db.registerUser(user);
-
-        Assertions.assertEquals(1, db.getDocumentsCount(Collections.usersCollection),
-                "registerUser method insert more than one element");
-    }
-
-    @Test
-    public void insertUserDocumentTest(){
-        IUser user = new User(12345, "abacaba");
-        db.registerUser(user);
-
-        Document documentFromDB = db.getAllFromCollection(Collections.usersCollection).first();
-
-        Assertions.assertNotNull(documentFromDB,
-                "documentFromDB is Null\n");
-        Assertions.assertEquals(user.getChatID(), documentFromDB.getLong(UserFields.chatID),
-                "ChatID is not correct\n\n" + documentFromDB.toJson());
-        Assertions.assertEquals(user.getFirstName(), documentFromDB.getString(UserFields.firstName),
-                "FirstName is nit correct\n\n" + documentFromDB.toJson());
-        Assertions.assertEquals(user.getTable(), documentFromDB.getString(UserFields.table),
-                "Table is not correct\n\n" + documentFromDB.toJson());
-    }
-
-    @Test
-    public void sameChatIDInsertUserDocumentTest(){
-        IUser user1 = new User(12345, "abacaba");
-        IUser user2 = new User(12345, "abc");
-
-        db.registerUser(user1);
-        db.registerUser(user2);
-
-        Assertions.assertEquals(1, db.getDocumentsCount(Collections.usersCollection),
-                "Chat IDs in db is not unique");
-    }
-
-    @Test
-    public void sameFirstNamesInsertUserDocumentTest(){
-        IUser user1 = new User(12345, "abacaba");
-        IUser user2 = new User(54321, "abacaba");
-
-        db.registerUser(user1);
-        db.registerUser(user2);
-
-        Assertions.assertEquals(2, db.getDocumentsCount(Collections.usersCollection),
-                "can't insert users with same first names");
-    }
 
     @Test
     public void insertOnlyOneCardDocumentTest(){
         IUser user = new User(12345, "abacaba");
         ICard card = new PlainText("text", "abacaba");
 
-        db.addCardToUser(user, card);
+        cardRepository.addCardToUser(user, card);
 
         Assertions.assertEquals(1, db.getDocumentsCount(user.getTable()),
                 "addCardToUser method insert more than one element");
@@ -98,7 +54,7 @@ public class MongoDBSyncWrapperTest {
     public void insertCardDocumentTest(){
         IUser user = new User(12345, "abacaba");
         ICard card = new PlainText("text", "abacaba");
-        db.addCardToUser(user, card);
+        cardRepository.addCardToUser(user, card);
 
         Document documentFromDB = db.getAllFromCollection(user.getTable()).first();
 
@@ -118,29 +74,29 @@ public class MongoDBSyncWrapperTest {
         ICard card1 = new PlainText("text", "1");
         ICard card2 = new PlainText("text", "2");
         ICard card3 = new Dictionary("text", new Document());
-        
-        db.addCardToUser(user, card1);
-        db.addCardToUser(user, card2);
-        db.addCardToUser(user, card3);
-        
-        Assertions.assertEquals(1, db.getDocumentsCount(user.getTable()), 
+
+        cardRepository.addCardToUser(user, card1);
+        cardRepository.addCardToUser(user, card2);
+        cardRepository.addCardToUser(user, card3);
+
+        Assertions.assertEquals(1, db.getDocumentsCount(user.getTable()),
                 "Card names in db is not unique");
     }
-    
+
     @Test
     public void countGetCarsNamesTest(){
         IUser user = new User(12345, "abacaba");
         for (int i = 0; i < 10; i++){
             ICard card = new PlainText(String.valueOf(i), "abacaba");
-            db.addCardToUser(user, card);
+            cardRepository.addCardToUser(user, card);
         }
 
         int count = 0;
 
-        for (Document e: db.getCardsNames(user)) {
+        for (Document e: cardRepository.getCardsNames(user)) {
             count++;
         }
-        
+
         Assertions.assertEquals(10, count,
                 "Count of names not equals count of cards");
     }
@@ -150,12 +106,12 @@ public class MongoDBSyncWrapperTest {
         IUser user = new User(12345, "abacaba");
         for (int i = 0; i < 10; i++){
             ICard card = new PlainText(String.valueOf(i), "abacaba");
-            db.addCardToUser(user, card);
+            cardRepository.addCardToUser(user, card);
         }
 
         int name = 0;
 
-        for (Document e: db.getCardsNames(user)) {
+        for (Document e: cardRepository.getCardsNames(user)) {
             Assertions.assertEquals(String.valueOf(name), e.getString(CardFields.name),
                     "Card name from db not equals real card name");
             name++;
@@ -166,9 +122,9 @@ public class MongoDBSyncWrapperTest {
     public void getCardDataByName(){
         IUser user = new User(12345, "abacaba");
         ICard card = new PlainText("text", "abacaba");
-        db.addCardToUser(user, card);
+        cardRepository.addCardToUser(user, card);
 
-        Map<String, Object> data = db.getCardDataByName(user, "text");
+        Map<String, Object> data = cardRepository.getCardDataByName(user, "text");
 
         Assertions.assertEquals("PlainText", data.get(CardFields.type),
                 "Card type not equals real card type");
@@ -177,10 +133,9 @@ public class MongoDBSyncWrapperTest {
     }
 
 
+    private class TestDB extends MongoDBCore {
 
-    private class TestDBWrapper extends MongoDBSyncWrapper{
-
-        public TestDBWrapper(String token, String dbName) {
+        public TestDB(String token, String dbName) {
             super(token, dbName);
         }
 

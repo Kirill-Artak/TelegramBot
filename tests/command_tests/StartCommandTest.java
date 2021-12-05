@@ -1,20 +1,14 @@
 package command_tests;
 
-import com.company.cardtemplates.ICard;
-import com.company.commands.commandhandler.actionhandler.HelpActionHandler;
 import com.company.commands.commandhandler.actionhandler.IActionHandler;
 import com.company.commands.commandhandler.actionhandler.StartActionHandler;
 import com.company.commands.commandhandler.messagecontext.IMessageContext;
 import com.company.database.DBtemplates.IUser;
 import com.company.database.DBtemplates.User;
-import com.company.database.IDatabaseWrapper;
-import com.mongodb.client.FindIterable;
-import org.bson.Document;
+import com.company.repositories.IUserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 public class StartCommandTest {
     private final long chatID = 12345;
@@ -23,31 +17,12 @@ public class StartCommandTest {
     private IActionHandler handler;
     private TestSender sender;
     private IMessageContext ctx;
-    private final IDatabaseWrapper<?, ?> db = new IDatabaseWrapper<Document, FindIterable<Document>>() {
-
-        @Override
-        public void insert(String collectionName, Document value, Document template) {}
-
-        @Override
-        public FindIterable<Document> get(String collectionName, Document filter) {return null;}
-
-        @Override
-        public void registerUser(IUser user) {}
-
-        @Override
-        public void addCardToUser(IUser user, ICard card) {}
-
-        @Override
-        public Iterable<Document> getCardsNames(IUser user) {return null;}
-
-        @Override
-        public Map<String, Object> getCardDataByName(IUser user, String name) {return null;}
-    };
+    private final IUserRepository userRepository = user -> {};
 
     @BeforeEach
     public void beforeEach(){
         sender = new TestSender();
-        handler = new StartActionHandler(sender, db);
+        handler = new StartActionHandler(sender, userRepository);
         ctx = new TestMessageContext(chatID, new User(chatID, firstName));
     }
 

@@ -3,15 +3,15 @@ package com.company.commands.commandhandler.actionhandler;
 import com.company.commands.commandhandler.messagecontext.IMessageContext;
 import com.company.commands.commandhandler.senders.ISender;
 import com.company.database.DBtemplates.User;
-import com.company.database.IDatabaseWrapper;
+import com.company.repositories.IUserRepository;
 
 public class StartActionHandler implements IActionHandler{
     private final ISender sender;
-    private final IDatabaseWrapper<?, ?> db;
+    private final IUserRepository userRepository;
 
-    public StartActionHandler(ISender sender, IDatabaseWrapper<?, ?> db){
+    public StartActionHandler(ISender sender, IUserRepository userRepository){
         this.sender = sender;
-        this.db = db;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -21,6 +21,6 @@ public class StartActionHandler implements IActionHandler{
 
     @Override
     public void postAction(IMessageContext ctx) {
-        db.registerUser(new User(ctx.getChatID(), ctx.getUser().getFirstName()));
+        userRepository.registerUser(new User(ctx.getChatID(), ctx.getUser().getFirstName()));
     }
 }

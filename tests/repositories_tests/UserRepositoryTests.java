@@ -32,7 +32,7 @@ public class UserRepositoryTests {
 
     @AfterEach
     public void afterTestMethod(){
-        db.dbDrop();
+        //db.dbDrop();
     }
 
 

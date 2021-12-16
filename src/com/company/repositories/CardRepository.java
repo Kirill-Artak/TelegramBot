@@ -16,7 +16,6 @@ public class CardRepository implements ICardRepository{
     private final IDatabaseCore<Document> db;
 
     public CardRepository(IDatabaseCore<Document> db){
-
         this.db = db;
     }
 
@@ -28,6 +27,55 @@ public class CardRepository implements ICardRepository{
                         card.getRawData(),
                         true,
                         new Document(CardFields.name, card.getName())
+                )
+        );
+    }
+
+    @Override
+    public void createCard(IUser user, String name) {
+        Document document = new Document(CardFields.name, name);
+        db.save(
+                new QueryObject<>(
+                        user.getTable(),
+                        document,
+                        true,
+                        document
+                )
+        );
+    }
+
+    @Override
+    public void setTypeToCard(IUser user, String name, String type) {
+        db.update(
+                new QueryObject<>(
+                        user.getTable(),
+                        new Document(CardFields.type, type),
+                        false,
+                        new Document(CardFields.name, name)
+                )
+        );
+    }
+
+    @Override
+    public void setDataToCard(IUser user, String name, Document data) {
+        db.update(
+                new QueryObject<>(
+                        user.getTable(),
+                        new Document(CardFields.data, data),
+                        false,
+                        new Document(CardFields.name, name)
+                )
+        );
+    }
+
+    @Override
+    public void setDataToCard(IUser user, String name, String data) {
+        db.update(
+                new QueryObject<>(
+                        user.getTable(),
+                        new Document(CardFields.data, data),
+                        false,
+                        new Document(CardFields.name, name)
                 )
         );
     }

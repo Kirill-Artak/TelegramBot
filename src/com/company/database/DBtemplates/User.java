@@ -34,6 +34,7 @@ public class User implements IUser {
     public Document getRawData(){
         return new Document(UserFields.chatID, chatID)
                 .append(UserFields.firstName, firstName)
-                .append(UserFields.table, table);
+                .append(UserFields.table, table)
+                .append("Current", "");
     }
 }

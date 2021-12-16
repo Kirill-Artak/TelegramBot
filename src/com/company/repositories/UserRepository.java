@@ -24,4 +24,28 @@ public class UserRepository implements IUserRepository{
                     new Document(UserFields.chatID, user.getChatID()))
         );
     }
+
+    @Override
+    public void updateCurrentCard(IUser user, String cardName) {
+        db.update(
+                new QueryObject<>(
+                        Collections.usersCollection,
+                        new Document(UserFields.current_card, cardName),
+                        false,
+                        new Document(UserFields.chatID, user.getChatID())
+                )
+        );
+    }
+
+    @Override
+    public String getCurrentCard(IUser user) {
+        return db.get(
+                new QueryObject<>(
+                        Collections.usersCollection,
+                        new Document(UserFields.chatID, user.getChatID()),
+                        false,
+                        new Document(UserFields.current_card, 1)
+                )
+        ).iterator().next().getString(UserFields.current_card);
+    }
 }

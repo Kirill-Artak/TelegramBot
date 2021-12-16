@@ -17,7 +17,22 @@ public class StartCommandTest {
     private IActionHandler handler;
     private TestSender sender;
     private IMessageContext ctx;
-    private final IUserRepository userRepository = user -> {};
+    private final IUserRepository userRepository = new IUserRepository() {
+        @Override
+        public void registerUser(IUser user) {
+
+        }
+
+        @Override
+        public void updateCurrentCard(IUser user, String cardName) {
+
+        }
+
+        @Override
+        public String getCurrentCard(IUser user) {
+            return null;
+        }
+    };
 
     @BeforeEach
     public void beforeEach(){

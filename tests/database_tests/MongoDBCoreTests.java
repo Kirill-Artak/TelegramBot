@@ -111,6 +111,40 @@ public class MongoDBCoreTests {
                 "documentFromDB is Null\n");
     }
 
+    @Test
+    public void update(){
+        db.save(
+                new QueryObject<>(
+                        "test",
+                        new Document("AAA", "asdfg"),
+                        false,
+                        new Document()
+                )
+        );
+
+        long count = db.getDocumentsCount("test");
+
+        Assertions.assertEquals(1, count);
+
+        db.update(
+                new QueryObject<>(
+                        "test",
+                        new Document("AAA", "a"),
+                        false,
+                        new Document("AAA", "asdfg")
+                )
+        );
+
+        count = db.getDocumentsCount("test");
+
+        Assertions.assertEquals(1, count);
+
+        Document document = db.getAllFromCollection("test").first();
+
+        Assertions.assertNotNull(document);
+        Assertions.assertEquals("a", document.getString("AAA"));
+    }
+
 
     private class TestDB extends MongoDBCore {
 

@@ -8,6 +8,10 @@ import java.util.Map;
 
 public interface ICardRepository {
     void addCardToUser(IUser user, ICard card);
+    void createCard(IUser user, String name);
+    void setTypeToCard(IUser user, String name, String type);
+    void setDataToCard(IUser user, String name, Document data);
+    void setDataToCard(IUser user, String name, String data);
     Iterable<Document> getCardsNames(IUser user);
     Map<String, Object> getCardDataByName(IUser user, String name);
 }

@@ -28,7 +28,7 @@ public class MongoDBCore implements IDatabaseCore<Document> {
         MongoDatabase db = mongoClient.getDatabase(dbName);
         MongoCollection<Document> collection = db.getCollection(query.collection());
 
-        if (query.isUnique() && collection.find(query.template()).first() == null) {
+        if (!query.isUnique() || collection.find(query.template()).first() == null) {
             collection.insertOne(query.query());
         }
     }
@@ -39,5 +39,14 @@ public class MongoDBCore implements IDatabaseCore<Document> {
         MongoCollection<Document> collection = db.getCollection(query.collection());
 
         return collection.find(query.query()).projection(query.template());
+    }
+
+    @Override
+    public void update(QueryObject<Document> query) {
+        MongoDatabase db = mongoClient.getDatabase(dbName);
+        MongoCollection<Document> collection = db.getCollection(query.collection());
+
+        //collection.find(query.query()).projection(query.template());
+        collection.findOneAndUpdate(query.template(), new Document("$set", query.query()));
     }
 }

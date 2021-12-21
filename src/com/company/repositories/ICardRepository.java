@@ -13,5 +13,5 @@ public interface ICardRepository {
     void setDataToCard(IUser user, String name, Document data);
     void setDataToCard(IUser user, String name, String data);
     Iterable<Document> getCardsNames(IUser user);
-    Map<String, Object> getCardDataByName(IUser user, String name);
+    ICard getCardDataByName(IUser user, String name);
 }

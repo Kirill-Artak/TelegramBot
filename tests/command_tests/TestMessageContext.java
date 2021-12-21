@@ -28,12 +28,12 @@ public record TestMessageContext(long chatID, User user) implements IMessageCont
     }
 
     @Override
-    public BaseAbilityBot bot() {
+    public BaseAbilityBot getTelegramBot() {
         return null;
     }
 
     @Override
-    public void setBot(BaseAbilityBot bot) {
-
+    public String getCallbackQuery() {
+        return null;
     }
 }

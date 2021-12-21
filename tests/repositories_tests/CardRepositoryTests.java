@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.Console;
 import java.util.Map;
 
 public class CardRepositoryTests {
@@ -60,6 +61,9 @@ public class CardRepositoryTests {
 
         Assertions.assertNotNull(documentFromDB,
                 "documentFromDB is Null\n");
+
+        System.out.println(documentFromDB.toJson());
+
         Assertions.assertEquals(card.getName(), documentFromDB.getString(CardFields.name),
                 "Name is not correct\n\n" + documentFromDB.toJson());
         Assertions.assertEquals(card.getCardType(), documentFromDB.getString(CardFields.type),
@@ -124,11 +128,11 @@ public class CardRepositoryTests {
         ICard card = new PlainText("text", "abacaba");
         cardRepository.addCardToUser(user, card);
 
-        Map<String, Object> data = cardRepository.getCardDataByName(user, "text");
+        ICard data = cardRepository.getCardDataByName(user, "text");
 
-        Assertions.assertEquals("PlainText", data.get(CardFields.type),
+        Assertions.assertEquals("PlainText", data.getCardType(),
                 "Card type not equals real card type");
-        Assertions.assertEquals("abacaba", data.get(CardFields.data),
+        Assertions.assertEquals("abacaba", data.getCardData(),
                 "Card data not equals real card data");
     }
 

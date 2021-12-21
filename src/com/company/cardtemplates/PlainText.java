@@ -17,7 +17,7 @@ public class PlainText extends BaseCardTemplate{
     }
 
     @Override
-    public Object getCardData() {
+    public String getCardData() {
         return text;
     }
 }

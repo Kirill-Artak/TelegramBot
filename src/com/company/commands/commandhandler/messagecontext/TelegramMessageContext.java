@@ -7,17 +7,25 @@ import org.telegram.abilitybots.api.bot.BaseAbilityBot;
 import org.telegram.abilitybots.api.objects.MessageContext;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.function.Consumer;
+
 
 public final class TelegramMessageContext implements IMessageContext{
-    private final long chatID;
+    private long chatID;
     private final String firstName;
     private ISender sender;
     private String message;
+    private BaseAbilityBot bot;
+    private String callback;
 
     public TelegramMessageContext(MessageContext ctx){
         this.chatID = ctx.chatId();
         this.firstName = ctx.user().getFirstName();
         this.message = ctx.update().getMessage().getText();
+        this.bot = ctx.bot();
+        if (ctx.update().hasCallbackQuery()){
+            this.callback = ctx.update().getCallbackQuery().getData();
+        }
     }
 
     public TelegramMessageContext(long chatID, String firstName){
@@ -27,15 +35,28 @@ public final class TelegramMessageContext implements IMessageContext{
 
     public TelegramMessageContext(BaseAbilityBot bot, Update upd){
         this.sender = new TelegramSenderWrapper(bot.silent());
-        this.chatID = upd.getMessage().getChatId();
+        if (upd.hasMessage())
+            this.chatID = upd.getMessage().getChatId();
+        else if (upd.hasCallbackQuery())
+            this.chatID = upd.getCallbackQuery().getFrom().getId().longValue();
         this.firstName = upd.getMessage().getFrom().getFirstName();
         this.message = upd.getMessage().getText();
+        this.bot = bot;
+        if (upd.hasCallbackQuery()){
+            this.callback = upd.getCallbackQuery().getData();
+        }
     }
 
     public TelegramMessageContext(Update upd){
-        this.chatID = upd.getMessage().getChatId();
+        if (upd.hasMessage())
+            this.chatID = upd.getMessage().getChatId();
+        else if (upd.hasCallbackQuery())
+            this.chatID = upd.getCallbackQuery().getFrom().getId().longValue();
         this.firstName = upd.getMessage().getFrom().getFirstName();
         this.message = upd.getMessage().getText();
+        if (upd.hasCallbackQuery()){
+            this.callback = upd.getCallbackQuery().getData();
+        }
     }
 
     @Override
@@ -59,14 +80,12 @@ public final class TelegramMessageContext implements IMessageContext{
     }
 
     @Override
-    public BaseAbilityBot bot() {
+    public BaseAbilityBot getTelegramBot() {
         return bot;
     }
 
     @Override
-    public void setBot(BaseAbilityBot bot) {
-        this.bot = bot;
+    public String getCallbackQuery() {
+        return callback;
     }
-public BaseAbilityBot bot;
-
 }

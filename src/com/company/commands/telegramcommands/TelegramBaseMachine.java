@@ -30,35 +30,7 @@ public class TelegramBaseMachine extends BaseCommand implements AbilityExtension
         this.stateMachine = stateMachine;
     }
 
-    public Ability execute() {
-        /*
-        ReplyFlow getName = ReplyFlow.builder(telegramDB)
-                .action((bot, upd) -> bot.silent().send("введи текст", upd.getMessage().getChatId()))
-                .build();
-
-        ReplyFlow onText = ReplyFlow.builder(telegramDB)
-                .action((bot, upd) -> bot.silent().send("введи название", upd.getMessage().getChatId()))
-                .onlyIf(update -> update.getMessage().getText().contains("текст"))
-                .next(getName)
-                .build();
-
-        ReplyFlow reply1 = ReplyFlow.builder(telegramDB)
-                .action((baseAbilityBot, update) -> {
-                    SendMessage msg = new SendMessage();
-                    InlineKeyboardMarkup a = InlineKeyboardMarkup.builder().build();
-                    baseAbilityBot.sender().
-                    msg.setReplyMarkup();
-                    baseAbilityBot.execute(new SendMessage().setReplyMarkup());
-                })
-                .onlyIf(update -> update.getMessage().getText().contains("/add"))
-                .next(onText)
-                .build();
-
-         */
-
-
-
-
+    public Ability addCard() {
         IState state = stateMachine.getFirst();
 
         ReplyFlow.ReplyFlowBuilder builder = ReplyFlow.builder(telegramDB, state.id());
@@ -84,7 +56,6 @@ public class TelegramBaseMachine extends BaseCommand implements AbilityExtension
             var ctx = new TelegramMessageContext(
                     baseAbilityBot,
                     update);
-            ctx.bot = baseAbilityBot;
 
             first.action(ctx);
         });
@@ -97,6 +68,8 @@ public class TelegramBaseMachine extends BaseCommand implements AbilityExtension
             builder.onlyIf(update -> !update.getMessage().isCommand() && first.predicate(
                     new TelegramMessageContext(update)));
         }
+
+
 
         if (first.getNext().isEmpty())
             return builder;

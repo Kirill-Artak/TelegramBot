@@ -12,4 +12,5 @@ public interface ICommandHandler {
     IActionHandler getStartActions();
     IActionHandler getHelpActions();
     IStateMachine getAddAction();
+    IStateMachine getGetCardAction();
 }

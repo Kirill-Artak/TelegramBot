@@ -5,7 +5,7 @@ import org.bson.Document;
 
 import java.util.Map;
 
-public class Dictionary extends BaseCardTemplate{
+public class Dictionary extends BaseCardTemplate implements IDictionary{
     private final Map<String, Object> data;
 
     public Dictionary(String name, Map<String, Object> data){
@@ -19,7 +19,21 @@ public class Dictionary extends BaseCardTemplate{
     }
 
     @Override
-    public Object getCardData() {
-        return data;
+    public String getCardData() {
+        StringBuilder result = new StringBuilder();
+
+        for (Map.Entry<String, Object> e: data.entrySet()) {
+            result.append(e.getKey());
+            result.append(" -> ");
+            result.append((String) e.getValue());
+            result.append('\n');
+        }
+
+        return result.substring(0);
+    }
+
+    @Override
+    public Map<String, String> getMap() {
+        return null;
     }
 }

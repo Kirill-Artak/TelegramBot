@@ -1,15 +1,19 @@
 package com.company.repositories;
 
+import com.company.cardtemplates.Dictionary;
 import com.company.cardtemplates.ICard;
+import com.company.cardtemplates.PlainText;
 import com.company.database.DBtemplates.IUser;
 import com.company.database.IDatabaseCore;
 import com.company.database.QueryObject;
 import com.company.database.dbfields.CardFields;
+import com.company.database.dbfields.CardTypes;
 import com.mongodb.client.model.Projections;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class CardRepository implements ICardRepository{
@@ -93,8 +97,8 @@ public class CardRepository implements ICardRepository{
     }
 
     @Override
-    public Map<String, Object> getCardDataByName(IUser user, String name) {
-        return db.get(
+    public ICard getCardDataByName(IUser user, String name) {
+        Document doc = db.get(
                 new QueryObject<>(
                         user.getTable(),
                         new Document(CardFields.name, name),
@@ -102,5 +106,15 @@ public class CardRepository implements ICardRepository{
                         new Document(CardFields.name, 1).append(CardFields.data, 1).append(CardFields.type, 1)
                 )
         ).iterator().next();
+
+        return switch (doc.getString(CardFields.type)) {
+            case CardTypes.text -> new PlainText(
+                    doc.getString(CardFields.name),
+                    doc.getString(CardFields.data));
+            case CardTypes.dictionary -> new Dictionary(
+                    doc.getString(CardFields.name),
+                    doc.get(CardFields.data, Document.class));
+            default -> null;
+        };
     }
 }

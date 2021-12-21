@@ -9,9 +9,14 @@ import com.company.repositories.ICardRepository;
 import com.company.repositories.IUserRepository;
 import org.bson.Document;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddCommandStateMachine implements IStateMachine{
     private final ICardRepository cards;
@@ -24,20 +29,6 @@ public class AddCommandStateMachine implements IStateMachine{
 
     @Override
     public IState getFirst() {
-        IState stopReceiveDict = new Node(7) {
-            @Override
-            public boolean predicate(IMessageContext ctx) {
-                return ctx.getMessage().contains("Stop");
-            }
-
-            @Override
-            public void action(IMessageContext ctx) {
-                String name = users.getCurrentCard(ctx.getUser());
-                ctx.getSender().send("Карточка сохранена!", ctx.getChatID());
-                users.updateCurrentCard(ctx.getUser(), "");
-            }
-        };
-
         IState receiveText = new Node(6) {
             @Override
             public boolean predicate(IMessageContext ctx) {
@@ -54,17 +45,33 @@ public class AddCommandStateMachine implements IStateMachine{
             }
         };
 
-        IState receiveDict = new Node(5, stopReceiveDict) {
+        IState receiveDict = new Node(5) {
             @Override
             public boolean predicate(IMessageContext ctx) {
-                return true;
+                return ctx.getMessage().length() > 0
+                        && !ctx.getMessage().equalsIgnoreCase("Ключ -> значение");
             }
 
             @Override
             public void action(IMessageContext ctx) {
                 String name = users.getCurrentCard(ctx.getUser());
-                String[] message = ctx.getMessage().split(" -> ");
-                cards.setDataToCard(ctx.getUser(), name, new Document(message[0], message[1]));
+                String[] message = ctx.getMessage().split("\n");
+
+                if (message.length % 2 != 0){
+                    return;
+                }
+
+                Map<String, Object> map = new HashMap<>();
+
+                for (String e: message) {
+                    String[] pair = e.split(" -> ");
+                    map.put(pair[0], pair[1]);
+                }
+
+                cards.setDataToCard(ctx.getUser(), name, new Document(map));
+
+                ctx.getSender().send("Карточка сохранена!", ctx.getChatID());
+                users.updateCurrentCard(ctx.getUser(), "");
             }
         };
 
@@ -78,21 +85,48 @@ public class AddCommandStateMachine implements IStateMachine{
             public void action(IMessageContext ctx) {
                 String name = users.getCurrentCard(ctx.getUser());
                 cards.setTypeToCard(ctx.getUser(), name, PlainText.class.getSimpleName());
-                ctx.getSender().send("Введите текст:", ctx.getChatID());
+                //ctx.getSender().send("Введите текст:", ctx.getChatID());
+
+                ReplyKeyboardMarkup keyboardMarkup = ReplyKeyboardMarkup.builder()
+                        .clearKeyboard()
+                        .build();
+
+                SendMessage msg = new SendMessage(String.valueOf(ctx.getChatID()), "Введите текст:");
+                msg.setReplyMarkup(keyboardMarkup);
+
+                try {
+                    ctx.getTelegramBot().execute(msg);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
             }
         };
 
         IState dict = new Node(3, receiveDict) {
             @Override
             public boolean predicate(IMessageContext ctx) {
-                return ctx.getMessage().contains("Словарь");
+                return ctx.getMessage().contains("Ключ -> значение");
             }
 
             @Override
             public void action(IMessageContext ctx) {
                 String name = users.getCurrentCard(ctx.getUser());
                 cards.setTypeToCard(ctx.getUser(), name, Dictionary.class.getSimpleName());
-                ctx.getSender().send("Введите пары вида \"ключ -> значение\":", ctx.getChatID());
+                //ctx.getSender().send("Введите пары вида \"ключ -> значение\":", ctx.getChatID());
+
+                ReplyKeyboardMarkup keyboardMarkup = ReplyKeyboardMarkup.builder()
+                        .clearKeyboard()
+                        .build();
+
+                SendMessage msg = new SendMessage(String.valueOf(ctx.getChatID()),
+                        "Введите пары вида \"ключ -> значение\":");
+                msg.setReplyMarkup(keyboardMarkup);
+
+                try {
+                    ctx.getTelegramBot().execute(msg);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
             }
         };
 
@@ -104,24 +138,25 @@ public class AddCommandStateMachine implements IStateMachine{
 
             @Override
             public void action(IMessageContext ctx) {
-                try {
-                    users.updateCurrentCard(ctx.getUser(), ctx.getMessage());
-
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-
-                try {
-                    cards.createCard(ctx.getUser(), ctx.getMessage());
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
+                users.updateCurrentCard(ctx.getUser(), ctx.getMessage());
+                cards.createCard(ctx.getUser(), ctx.getMessage());
 
 
                 //ctx.getSender().send("Выберите тип:", ctx.getChatID());
+                KeyboardRow row = new KeyboardRow();
+                row.add(new KeyboardButton("Текст"));
+                row.add(new KeyboardButton("Ключ -> значение"));
+
+                ReplyKeyboardMarkup keyboardMarkup = ReplyKeyboardMarkup.builder()
+                        .keyboardRow(row)
+                        .oneTimeKeyboard(true)
+                        .build();
+
                 SendMessage msg = new SendMessage(String.valueOf(ctx.getChatID()), "Выберите тип:");
+                msg.setReplyMarkup(keyboardMarkup);
+
                 try {
-                    ctx.bot().execute(msg);
+                    ctx.getTelegramBot().execute(msg);
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }

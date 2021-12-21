@@ -11,6 +11,6 @@ public interface IMessageContext {
     User getUser();
     ISender getSender();
     String getMessage();
-    BaseAbilityBot bot();
-    void setBot(BaseAbilityBot bot);
+    BaseAbilityBot getTelegramBot();
+    String getCallbackQuery();
 }

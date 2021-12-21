@@ -5,6 +5,7 @@ import com.company.commands.commandhandler.actionhandler.IActionHandler;
 import com.company.commands.commandhandler.actionhandler.StartActionHandler;
 import com.company.commands.commandhandler.senders.ISender;
 import com.company.commands.commandhandler.statemachines.AddCommandStateMachine;
+import com.company.commands.commandhandler.statemachines.GetCardStateMachine;
 import com.company.commands.commandhandler.statemachines.IStateMachine;
 import com.company.commands.commandhandler.statemachines.StateMachine;
 import com.company.repositories.ICardRepository;
@@ -39,5 +40,10 @@ public final class CommandHandler implements ICommandHandler{
     @Override
     public IStateMachine getAddAction() {
         return new AddCommandStateMachine(cardRepository, userRepository);
+    }
+
+    @Override
+    public IStateMachine getGetCardAction() {
+        return new GetCardStateMachine(cardRepository);
     }
 }

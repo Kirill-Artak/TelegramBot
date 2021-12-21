@@ -2,6 +2,7 @@ package com.company.commands.commandhandler;
 
 import com.company.commands.commandhandler.senders.ISender;
 import com.company.commands.telegramcommands.TelegramAddCommand;
+import com.company.commands.telegramcommands.TelegramGetCardCommand;
 import com.company.commands.telegramcommands.TelegramHelpCommand;
 import com.company.commands.telegramcommands.TelegramStartCommand;
 import org.telegram.abilitybots.api.db.DBContext;
@@ -18,12 +19,14 @@ public class CommandStore implements ICommandStore {
     }
 
     @Override
-    public Collection<AbilityExtension> getTelegramCommands(ISender sender, DBContext automateDB) {
+    public Collection<AbilityExtension> getTelegramCommands(ISender sender,
+                                                            DBContext automateDB) {
         commandHandler.setSender(sender);
         ArrayList<AbilityExtension> commands = new ArrayList<>();
         commands.add(new TelegramStartCommand(commandHandler.getStartActions()));
         commands.add(new TelegramHelpCommand(commandHandler.getHelpActions()));
         commands.add(new TelegramAddCommand(automateDB, commandHandler.getAddAction()));
+        commands.add(new TelegramGetCardCommand(automateDB, commandHandler.getGetCardAction()));
         return commands;
     }
 }

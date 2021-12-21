@@ -24,13 +24,17 @@ public class MongoDBCore implements IDatabaseCore<Document> {
     }
 
     @Override
-    public void save(QueryObject<Document> query) {
+    public boolean save(QueryObject<Document> query) {
         MongoDatabase db = mongoClient.getDatabase(dbName);
         MongoCollection<Document> collection = db.getCollection(query.collection());
 
         if (!query.isUnique() || collection.find(query.template()).first() == null) {
             collection.insertOne(query.query());
+
+            return true;
         }
+
+        return false;
     }
 
     @Override
@@ -42,11 +46,12 @@ public class MongoDBCore implements IDatabaseCore<Document> {
     }
 
     @Override
-    public void update(QueryObject<Document> query) {
+    public boolean update(QueryObject<Document> query) {
         MongoDatabase db = mongoClient.getDatabase(dbName);
         MongoCollection<Document> collection = db.getCollection(query.collection());
 
-        //collection.find(query.query()).projection(query.template());
-        collection.findOneAndUpdate(query.template(), new Document("$set", query.query()));
+        Document document = collection.findOneAndUpdate(query.template(), new Document("$set", query.query()));
+
+        return document == null;
     }
 }

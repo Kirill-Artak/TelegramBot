@@ -30,7 +30,7 @@ public class MongoDBCoreTests {
 
     @Test
     public void insertOnlyOneDocumentTest(){
-        db.save(new QueryObject<>(
+        db.trySave(new QueryObject<>(
                 "test",
                 new Document("aaa", "aaa"),
                 true,
@@ -42,7 +42,7 @@ public class MongoDBCoreTests {
 
     @Test
     public void insertDocumentTest(){
-        db.save(new QueryObject<>(
+        db.trySave(new QueryObject<>(
                 "test",
                 new Document("aaa", "bbb"),
                 true,
@@ -58,13 +58,13 @@ public class MongoDBCoreTests {
 
     @Test
     public void insertUniqueDocumentsTest(){
-        db.save(new QueryObject<>(
+        db.trySave(new QueryObject<>(
                 "test",
                 new Document("aaa", "bbb"),
                 true,
                 new Document("aaa", "bbb")));
 
-        db.save(new QueryObject<>(
+        db.trySave(new QueryObject<>(
                 "test",
                 new Document("aaa", "bbb"),
                 true,
@@ -76,7 +76,7 @@ public class MongoDBCoreTests {
 
     @Test
     public void getExistingDocumentTest(){
-        db.save(new QueryObject<>(
+        db.trySave(new QueryObject<>(
                 "test",
                 new Document("aaa", "bbb"),
                 true,
@@ -113,7 +113,7 @@ public class MongoDBCoreTests {
 
     @Test
     public void update(){
-        db.save(
+        db.trySave(
                 new QueryObject<>(
                         "test",
                         new Document("AAA", "asdfg"),
@@ -126,7 +126,7 @@ public class MongoDBCoreTests {
 
         Assertions.assertEquals(1, count);
 
-        db.update(
+        db.tryUpdate(
                 new QueryObject<>(
                         "test",
                         new Document("AAA", "a"),

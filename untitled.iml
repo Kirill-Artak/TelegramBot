@@ -9,7 +9,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="google.code.gson" level="project" />
-    <orderEntry type="library" name="telegram.telegrambots.abilities" level="project" />
     <orderEntry type="library" name="slf4j.simple" level="project" />
     <orderEntry type="library" name="mongodb.driver.sync" level="project" />
     <orderEntry type="module-library" scope="TEST">
@@ -28,5 +27,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="telegram.telegrambots" level="project" />
+    <orderEntry type="library" name="telegram.telegrambots.abilities" level="project" />
   </component>
 </module>

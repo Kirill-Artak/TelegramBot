@@ -24,7 +24,7 @@ public class MongoDBCore implements IDatabaseCore<Document> {
     }
 
     @Override
-    public boolean save(QueryObject<Document> query) {
+    public boolean trySave(QueryObject<Document> query) {
         MongoDatabase db = mongoClient.getDatabase(dbName);
         MongoCollection<Document> collection = db.getCollection(query.collection());
 
@@ -46,7 +46,7 @@ public class MongoDBCore implements IDatabaseCore<Document> {
     }
 
     @Override
-    public boolean update(QueryObject<Document> query) {
+    public boolean tryUpdate(QueryObject<Document> query) {
         MongoDatabase db = mongoClient.getDatabase(dbName);
         MongoCollection<Document> collection = db.getCollection(query.collection());
 

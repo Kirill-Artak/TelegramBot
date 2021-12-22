@@ -8,13 +8,7 @@ import com.company.database.IDatabaseCore;
 import com.company.database.QueryObject;
 import com.company.database.dbfields.CardFields;
 import com.company.database.dbfields.CardTypes;
-import com.mongodb.client.model.Projections;
 import org.bson.Document;
-import org.bson.conversions.Bson;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class CardRepository implements ICardRepository{
     private final IDatabaseCore<Document> db;
@@ -25,7 +19,7 @@ public class CardRepository implements ICardRepository{
 
     @Override
     public void addCardToUser(IUser user, ICard card) {
-        db.save(
+        db.trySave(
                 new QueryObject<>(
                         user.getTable(),
                         card.getRawData(),
@@ -38,7 +32,7 @@ public class CardRepository implements ICardRepository{
     @Override
     public void createCard(IUser user, String name) {
         Document document = new Document(CardFields.name, name);
-        db.save(
+        db.trySave(
                 new QueryObject<>(
                         user.getTable(),
                         document,
@@ -50,7 +44,7 @@ public class CardRepository implements ICardRepository{
 
     @Override
     public void setTypeToCard(IUser user, String name, String type) {
-        db.update(
+        db.tryUpdate(
                 new QueryObject<>(
                         user.getTable(),
                         new Document(CardFields.type, type),
@@ -62,7 +56,7 @@ public class CardRepository implements ICardRepository{
 
     @Override
     public void setDataToCard(IUser user, String name, Document data) {
-        db.update(
+        db.tryUpdate(
                 new QueryObject<>(
                         user.getTable(),
                         new Document(CardFields.data, data),
@@ -74,7 +68,7 @@ public class CardRepository implements ICardRepository{
 
     @Override
     public void setDataToCard(IUser user, String name, String data) {
-        db.update(
+        db.tryUpdate(
                 new QueryObject<>(
                         user.getTable(),
                         new Document(CardFields.data, data),

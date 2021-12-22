@@ -1,7 +1,7 @@
 package com.company.database;
 
 public interface IDatabaseCore<T>{
-    boolean save(QueryObject<T> query);
+    boolean trySave(QueryObject<T> query);
     Iterable<T> get(QueryObject<T> query);
-    boolean update(QueryObject<T> query);
+    boolean tryUpdate(QueryObject<T> query);
 }

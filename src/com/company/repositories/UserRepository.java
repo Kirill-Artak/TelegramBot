@@ -16,7 +16,7 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public void registerUser(IUser user) {
-        db.save(
+        db.trySave(
                 new QueryObject<>(
                     Collections.usersCollection,
                     user.getRawData(),
@@ -27,7 +27,7 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public void updateCurrentCard(IUser user, String cardName) {
-        db.update(
+        db.tryUpdate(
                 new QueryObject<>(
                         Collections.usersCollection,
                         new Document(UserFields.current_card, cardName),
